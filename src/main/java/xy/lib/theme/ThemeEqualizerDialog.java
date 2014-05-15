@@ -82,17 +82,15 @@ public class ThemeEqualizerDialog extends JDialog {
 		}.start();
 	}
 
-	public static void open(Window parent) {
-		open(parent, EqualizedTheme.getDefaultHueOffset(),
+	public static EqualizedTheme open(Window parent) {
+		return open(parent, new EqualizedTheme (EqualizedTheme.getDefaultHueOffset(),
 				EqualizedTheme.getDefaultSaturationOffset(),
-				EqualizedTheme.getDefaultBrightnessOffset());
+				EqualizedTheme.getDefaultBrightnessOffset()));
 	}
 
-	public static EqualizedTheme open(Window parent, int initialHueOffset,
-			int initialSaturationOffset, int initialBrightnessOffset) {
+	public static EqualizedTheme open(Window parent, EqualizedTheme initialTheme) {
 		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent,
-				new EqualizedTheme(initialHueOffset, initialSaturationOffset,
-						initialBrightnessOffset));
+				initialTheme);
 		dialog.setVisible(true);
 		if (dialog.isThemeAccepted()) {
 			return dialog.getSelectedTheme();
