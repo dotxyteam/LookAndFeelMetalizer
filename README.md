@@ -8,7 +8,7 @@ Java library implementing a great number of themes of the Swing Metal Look And F
 Features
 ========
 
-- generated themes
+- great number of generated themes
 - decent color schemes
 - theme selection dialog
 
