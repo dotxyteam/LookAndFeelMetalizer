@@ -23,8 +23,8 @@ Usage
 =====
 
 
-A Metalizer theme is a 'EqualizedTheme' object.
-It is defined by 3 values: hue, saturation and brightness 
+A Metalizer theme is an 'EqualizedTheme' object.
+It is defined by 3 values: hue, saturation and brightness.
 Each value is an integer between 0 and 255.
 Example:
 
@@ -45,6 +45,7 @@ before creating any controls:
     }
 
 If the controls are already created, then use:
+
     SwingUtilities.updateComponentTreeUI(applicationWindow);
     
 Use the following code to
