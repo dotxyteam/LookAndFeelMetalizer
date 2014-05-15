@@ -15,7 +15,7 @@ Features
 Download
 ========
 
-library: [Metalizer-0.8.jar](https://raw.github.com/olitank/LookAndFeelMetalizer/master/dist/Metalizer-0.8.jar)
+library: [Metalizer-0.8.jar](https://github.com/olitank/LookAndFeelMetalizer/master/dist/Metalizer-0.8.jar)
 
 sources: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/master.zip)
 
