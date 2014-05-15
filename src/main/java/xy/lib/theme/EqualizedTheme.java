@@ -44,22 +44,24 @@ public class EqualizedTheme extends DefaultMetalTheme {
 		float[] hsb = Color.RGBtoHSB(colorResource.getRed(),
 				colorResource.getGreen(), colorResource.getBlue(), null);
 
-		hsb[0] = modulo1(hsb[0] - defaultHsbOffset[0] + (hue2555Offset / 255f));
-		hsb[1] = modulo1(hsb[1] - defaultHsbOffset[1]
+		hsb[0] = adjustHSBOverflow(hsb[0] - defaultHsbOffset[0] + (hue2555Offset / 255f));
+		hsb[1] = adjustHSBOverflow(hsb[1] - defaultHsbOffset[1]
 				+ (saturation2555Offset / 255f));
-		hsb[2] = modulo1(hsb[2] - defaultHsbOffset[2]
+		hsb[2] = adjustHSBOverflow(hsb[2] - defaultHsbOffset[2]
 				+ (brightness2555Offset / 255f));
 
 		int rgb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
 		return new ColorUIResource(rgb);
 	}
 
-	private float modulo1(float f) {
+	private float adjustHSBOverflow(float f) {
 		if (f < 0) {
-			f = (float) Math.ceil(f) - f;
+			return adjustHSBOverflow(-f);
+		}
+		if(f > 1.0){
+			return adjustHSBOverflow((float)Math.ceil(f) - f);
 		}
 		f = Math.round(f * 100f) / 100f;
-		f = f % 1.001f;
 		return f;
 	}
 

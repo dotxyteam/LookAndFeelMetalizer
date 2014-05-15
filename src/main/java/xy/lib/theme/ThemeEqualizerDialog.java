@@ -5,12 +5,11 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Method;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,6 +32,8 @@ public class ThemeEqualizerDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final String MAIN_CLASS_PROPERTY_KEY = "xy.main.class";
+
 	protected final JPanel contentPanel = new JPanel();
 	protected JSlider hueSlider;
 	protected JSlider saturationSlider;
@@ -45,8 +46,6 @@ public class ThemeEqualizerDialog extends JDialog {
 
 	protected boolean themeAccepted = false;
 
-	protected Window[] additionalPreviewWindows;
-
 	protected long previewDelayMilliseconds = 1000;
 
 	protected JLabel messageLabel;
@@ -57,9 +56,30 @@ public class ThemeEqualizerDialog extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		JDialog.setDefaultLookAndFeelDecorated(true);
+	public static void main(String[] args) throws Exception {
+		tryToLaunchTheMainApplication(args);
 		open(null);
+	}
+
+	private static void tryToLaunchTheMainApplication(final String[] args) {
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					String mainClassName = System
+							.getProperty(MAIN_CLASS_PROPERTY_KEY);
+					if (mainClassName != null) {
+						Class<?> mainClass = Class.forName(mainClassName);
+						Method mainMethod = mainClass.getMethod("main",
+								String[].class);
+						mainMethod.invoke(null, new Object[] { args });
+					}
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		}.start();
 	}
 
 	public static void open(Window parent) {
@@ -88,14 +108,16 @@ public class ThemeEqualizerDialog extends JDialog {
 	 */
 	public ThemeEqualizerDialog(Window parent, EqualizedTheme initialValues) {
 		super(parent);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("theme.gif")));
 		if (parent != null) {
 			if (parent.getIconImages() != null) {
 				if (parent.getIconImages().size() > 0) {
 					setIconImage(parent.getIconImages().get(0));
 				}
 			}
+			setModal(true);
 		}
-		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -203,14 +225,6 @@ public class ThemeEqualizerDialog extends JDialog {
 		this.previewDelayMilliseconds = milliseconds;
 	}
 
-	public Window[] getAdditionalPreviewWindows() {
-		return additionalPreviewWindows;
-	}
-
-	public void setAdditionalPreviewWindows(Window[] additionalPreviewWindows) {
-		this.additionalPreviewWindows = additionalPreviewWindows;
-	}
-
 	protected void initValues(EqualizedTheme initialValues) {
 		initialLookAndFeel = UIManager.getLookAndFeel();
 		initialTheme = MetalLookAndFeel.getCurrentTheme();
@@ -240,14 +254,19 @@ public class ThemeEqualizerDialog extends JDialog {
 	@Override
 	public void dispose() {
 		if (!themeAccepted) {
-			MetalLookAndFeel.setCurrentTheme(initialTheme);
+			showBusy(this, true);
 			try {
-				UIManager.setLookAndFeel(initialLookAndFeel);
-			} catch (UnsupportedLookAndFeelException e) {
-				throw new AssertionError(e);
-			}
-			for (Window window : getPreviewWindows()) {
-				SwingUtilities.updateComponentTreeUI(window);
+				MetalLookAndFeel.setCurrentTheme(initialTheme);
+				try {
+					UIManager.setLookAndFeel(initialLookAndFeel);
+				} catch (UnsupportedLookAndFeelException e) {
+					throw new AssertionError(e);
+				}
+				for (Window window : Window.getWindows()) {
+					SwingUtilities.updateComponentTreeUI(window);
+				}
+			} finally {
+				showBusy(this, false);
 			}
 		}
 		super.dispose();
@@ -322,23 +341,11 @@ public class ThemeEqualizerDialog extends JDialog {
 			throw new AssertionError(e);
 		}
 		SwingUtilities.updateComponentTreeUI(ThemeEqualizerDialog.this);
-		for (Window window : getPreviewWindows()) {
+		for (Window window : Window.getWindows()) {
 			SwingUtilities.updateComponentTreeUI(window);
 		}
 		messageLabel.setForeground(UIManager.getColor("Label.background"));
 		messageLabel.setBackground(UIManager.getColor("Label.foreground"));
-	}
-
-	private List<Window> getPreviewWindows() {
-		List<Window> result = new ArrayList<Window>();
-		Window owner = getOwner();
-		if (owner != null) {
-			result.add(owner);
-		}
-		if (additionalPreviewWindows != null) {
-			result.addAll(Arrays.asList(additionalPreviewWindows));
-		}
-		return result;
 	}
 
 	protected boolean isAlreadyActive(EqualizedTheme theme) {
