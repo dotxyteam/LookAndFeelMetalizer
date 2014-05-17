@@ -22,7 +22,6 @@ Sources: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/ma
 Usage
 =====
 
-
 A Metalizer theme is an 'EqualizedTheme' object.
 It is defined by 3 values: hue, saturation and brightness.
 Each value is an integer between 0 and 255.
