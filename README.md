@@ -22,6 +22,16 @@ Sources: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/ma
 Usage
 =====
 
+The jar file is runnable.
+
+To run:
+- either double-click on the jar file (OS-dependant)
+- or run this command: java -jar <the-jar-file>
+
+By default it will:
+- open the theme selection dialog
+- try to download and open a test application
+
 A Metalizer theme is an 'EqualizedTheme' object.
 It is defined by 3 values: hue, saturation and brightness.
 Each value is an integer between 0 and 255.
