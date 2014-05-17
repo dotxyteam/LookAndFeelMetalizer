@@ -26,7 +26,7 @@ The jar file is runnable.
 
 To run:
 - either double-click on the jar file (OS-dependant)
-- or run this command: java -jar <the-jar-file>
+- or run this command: java -jar TheDownloadedJarFile
 
 By default it will:
 - open the theme selection dialog
