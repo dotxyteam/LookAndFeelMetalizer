@@ -1,23 +1,23 @@
 LookAndFeelMetalizer
 ====================
 
-Java library implementing a great number of themes of the Swing Metal Look And Feel
+Java library offering a great number of themes of the Swing Metal Look And Feel
 
 ![Screenshots](https://raw.github.com/olitank/LookAndFeelMetalizer/master/screenshots/all.png)
 
 Features
 ========
 
-- great number of generated themes
-- decent color schemes
+- lot of generated themes
+- consistent color schemes
 - theme selection dialog
 
 Download
 ========
 
-library: [Metalizer-0.8.jar](https://raw.github.com/olitank/LookAndFeelMetalizer/master/dist/Metalizer-0.8.jar)
+Library: [Metalizer-0.8.jar](https://raw.github.com/olitank/LookAndFeelMetalizer/master/dist/Metalizer-0.8.jar)
 
-sources: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/master.zip)
+Sources: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/master.zip)
 
 Usage
 =====
