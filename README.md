@@ -1,7 +1,7 @@
 LookAndFeelMetalizer
 ====================
 
-Java library offering a great number of themes of the Swing Metal Look And Feel
+Java library generating a great number of themes of the Swing Metal Look And Feel
 
 ![Screenshots](https://raw.github.com/olitank/LookAndFeelMetalizer/master/screenshots/all.png)
 
