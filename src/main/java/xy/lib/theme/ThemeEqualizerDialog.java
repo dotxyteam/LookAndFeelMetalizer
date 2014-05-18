@@ -9,6 +9,8 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -64,7 +66,16 @@ public class ThemeEqualizerDialog extends JDialog {
 	 */
 	public static void main(String[] args) throws Exception {
 		tryToLaunchTheMainApplication(args);
-		open(null);
+		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(null, null);
+		dialog.setModal(false);
+		dialog.setAlwaysOnTop(true);
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		dialog.setVisible(true);
 	}
 
 	private static void tryToLaunchTheMainApplication(final String[] args) {
@@ -74,7 +85,8 @@ public class ThemeEqualizerDialog extends JDialog {
 				try {
 					String mainClassName = System
 							.getProperty(TEST_MAIN_CLASS_PROPERTY_KEY);
-					ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+					ClassLoader classLoader = ClassLoader
+							.getSystemClassLoader();
 					if (mainClassName == null) {
 						classLoader = URLClassLoader
 								.newInstance(
@@ -83,9 +95,10 @@ public class ThemeEqualizerDialog extends JDialog {
 														DEFAULT_TEST_APPLICATION_URL_PROPERTY_KEY,
 														"https://shards.googlecode.com/files/SwingSet2.jar")) },
 										getClass().getClassLoader());
-						mainClassName = System.getProperty(
-								DEFAULT_TEST_APPLICATION_MAIN_CLASS_PROPERTY_KEY,
-								"SwingSet2");
+						mainClassName = System
+								.getProperty(
+										DEFAULT_TEST_APPLICATION_MAIN_CLASS_PROPERTY_KEY,
+										"SwingSet2");
 					}
 					Class<?> mainClass = Class.forName(mainClassName, true,
 							classLoader);
@@ -125,7 +138,9 @@ public class ThemeEqualizerDialog extends JDialog {
 	 */
 	public ThemeEqualizerDialog(Window parent, EqualizedTheme initialValues) {
 		super(parent);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ThemeEqualizerDialog.class.getResource("/xy/lib/theme/theme.gif")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(
+				ThemeEqualizerDialog.class
+						.getResource("/xy/lib/theme/theme.gif")));
 		if (parent != null) {
 			if (parent.getIconImages() != null) {
 				if (parent.getIconImages().size() > 0) {
@@ -133,7 +148,7 @@ public class ThemeEqualizerDialog extends JDialog {
 				}
 			}
 		}
-		setAlwaysOnTop(true);
+		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
