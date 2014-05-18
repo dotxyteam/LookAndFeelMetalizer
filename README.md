@@ -1,7 +1,7 @@
 LookAndFeelMetalizer
 ====================
 
-LookAndFeelMetalizer allows to modify the theme of the Metal Look And Feel
+LookAndFeelMetalizer allows to quickly modify the theme of the Metal look-and-feel
 
 ![Screenshots](https://raw.github.com/olitank/LookAndFeelMetalizer/master/screenshots/all.png)
 
