@@ -74,4 +74,4 @@ Feedback
 
 Feel free to [post any found bugs](https://github.com/olitank/LookAndFeelMetalizer/issues) or send me a message: olitank@yahoo.fr
 
-Thanks! 
+Thanks!
