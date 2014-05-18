@@ -35,6 +35,7 @@ By default it will:
 A Metalizer theme is an 'EqualizedTheme' object.
 It is defined by 3 values: hue, saturation and brightness.
 Each value is an integer between 0 and 255.
+Open the theme selection dialog to find out your preferred values.
 Example:
 
     int hue = 0;
