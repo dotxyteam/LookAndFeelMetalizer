@@ -15,7 +15,8 @@ Features
 Download
 ========
 
-Project: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/master.zip)
+Binary: [Metalizer-0.8.jar](https://raw.github.com/olitank/LookAndFeelMetalizer/master/target/Metalizer-0.8.jar)
+Source: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/master.zip)
 
 Usage
 =====
