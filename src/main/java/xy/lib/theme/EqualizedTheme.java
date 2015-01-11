@@ -1,5 +1,5 @@
 package xy.lib.theme;
-
+ 
 import java.awt.Color;
 
 import javax.swing.UIManager;
@@ -37,12 +37,18 @@ public class EqualizedTheme extends DefaultMetalTheme {
 	public int getBrightnessOffset() {
 		return brightnessOffset;
 	}
+	
+	
+	public Color adpapt(Color color){
+		return changeHSB255(color, hueOffset, saturationOffset,
+				brightnessOffset);
+	}
 
-	private ColorUIResource changeHSB255(ColorUIResource colorResource,
+	private ColorUIResource changeHSB255(Color color,
 			int hue2555Offset, int saturation2555Offset,
 			int brightness2555Offset) {
-		float[] hsb = Color.RGBtoHSB(colorResource.getRed(),
-				colorResource.getGreen(), colorResource.getBlue(), null);
+		float[] hsb = Color.RGBtoHSB(color.getRed(),
+				color.getGreen(), color.getBlue(), null);
 
 		hsb[0] = adjustHSBOverflow(hsb[0] - defaultHsbOffset[0] + (hue2555Offset / 255f));
 		hsb[1] = adjustHSBOverflow(hsb[1] - defaultHsbOffset[1]
@@ -54,15 +60,15 @@ public class EqualizedTheme extends DefaultMetalTheme {
 		return new ColorUIResource(rgb);
 	}
 
-	private float adjustHSBOverflow(float f) {
-		if (f < 0) {
-			return adjustHSBOverflow(-f);
+	private float adjustHSBOverflow(float value) {
+		if (value < 0.0) {
+			return adjustHSBOverflow(-value);
 		}
-		if(f > 1.0){
-			return adjustHSBOverflow((float)Math.ceil(f) - f);
+		if(value > 1.0){
+			return adjustHSBOverflow((float)Math.ceil(value) - value);
 		}
-		f = Math.round(f * 100f) / 100f;
-		return f;
+		value = Math.round(value * 100f) / 100f;
+		return value;
 	}
 
 	public ColorUIResource getFocusColor() {

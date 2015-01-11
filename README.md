@@ -1,7 +1,7 @@
 LookAndFeelMetalizer
 ====================
 
-LookAndFeelMetalizer allows to vary the colors of the Metal LookAndFeel while automatically maintaining a consistent palette.
+LookAndFeelMetalizer allows to quickly modify the theme of the Metal look-and-feel
 
 ![Screenshots](https://raw.github.com/olitank/LookAndFeelMetalizer/master/screenshots/all.png)
 
@@ -15,9 +15,7 @@ Features
 Download
 ========
 
-Binary: [Metalizer-0.8.jar](https://raw.github.com/olitank/LookAndFeelMetalizer/master/target/Metalizer-0.8.jar)
-
-Source: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/master.zip)
+Project: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/master.zip)
 
 Usage
 =====
