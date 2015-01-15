@@ -255,22 +255,25 @@ public class EqualizedTheme extends DefaultMetalTheme {
 		return Math.round(defaultHsbOffset[2] * 255);
 	}
 
-	public void activate(){
+	public void activate() {
 		if (isAlreadyActive()) {
 			return;
 		}
 		try {
 			MetalLookAndFeel.setCurrentTheme(this);
-			UIManager.setLookAndFeel(MetalLookAndFeel.class.getName());			
+			UIManager.setLookAndFeel(MetalLookAndFeel.class.getName());
 		} catch (Exception e) {
 			throw new AssertionError(e);
 		}
-		for (Window window : Window.getWindows()) {
-			SwingUtilities.updateComponentTreeUI(window);
-		}		
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				for (Window window : Window.getWindows()) {
+					SwingUtilities.updateComponentTreeUI(window);
+				}
+			}
+		});
 	}
-	
-
 
 	public boolean isAlreadyActive() {
 		LookAndFeel currentLAF = UIManager.getLookAndFeel();
@@ -282,7 +285,6 @@ public class EqualizedTheme extends DefaultMetalTheme {
 		}
 		return true;
 	}
-
 
 	@Override
 	public int hashCode() {
