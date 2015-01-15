@@ -363,44 +363,9 @@ public class ThemeEqualizerDialog extends JDialog {
 
 	protected void updateTheme() {
 		EqualizedTheme selectedTheme = getSelectedTheme();
-		if (isAlreadyActive(selectedTheme)) {
-			return;
-		}
-		try {
-			selectedTheme.apply();
-		} catch (Exception e) {
-			throw new AssertionError(e);
-		}
-		SwingUtilities.updateComponentTreeUI(ThemeEqualizerDialog.this);
-		for (Window window : Window.getWindows()) {
-			SwingUtilities.updateComponentTreeUI(window);
-		}
+		selectedTheme.activate();
 		messageLabel.setForeground(UIManager.getColor("Label.background"));
 		messageLabel.setBackground(UIManager.getColor("Label.foreground"));
-	}
-
-	protected boolean isAlreadyActive(EqualizedTheme theme) {
-		LookAndFeel currentLAF = UIManager.getLookAndFeel();
-		if (!(currentLAF instanceof MetalLookAndFeel)) {
-			return false;
-		}
-		MetalTheme currrentTheme = MetalLookAndFeel.getCurrentTheme();
-		if (!(currrentTheme instanceof EqualizedTheme)) {
-			return false;
-		}
-		EqualizedTheme currrentEqualizedTheme = (EqualizedTheme) currrentTheme;
-		if (currrentEqualizedTheme.getHueOffset() != theme.getHueOffset()) {
-			return false;
-		}
-		if (currrentEqualizedTheme.getSaturationOffset() != theme
-				.getSaturationOffset()) {
-			return false;
-		}
-		if (currrentEqualizedTheme.getBrightnessOffset() != theme
-				.getBrightnessOffset()) {
-			return false;
-		}
-		return true;
 	}
 
 	private static void showBusy(Window window, boolean b) {

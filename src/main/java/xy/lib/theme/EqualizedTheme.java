@@ -1,7 +1,10 @@
 package xy.lib.theme;
- 
-import java.awt.Color;
 
+import java.awt.Color;
+import java.awt.Window;
+
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
@@ -37,20 +40,19 @@ public class EqualizedTheme extends DefaultMetalTheme {
 	public int getBrightnessOffset() {
 		return brightnessOffset;
 	}
-	
-	
-	public Color adpapt(Color color){
+
+	public Color adpapt(Color color) {
 		return changeHSB255(color, hueOffset, saturationOffset,
 				brightnessOffset);
 	}
 
-	private ColorUIResource changeHSB255(Color color,
-			int hue2555Offset, int saturation2555Offset,
-			int brightness2555Offset) {
-		float[] hsb = Color.RGBtoHSB(color.getRed(),
-				color.getGreen(), color.getBlue(), null);
+	private ColorUIResource changeHSB255(Color color, int hue2555Offset,
+			int saturation2555Offset, int brightness2555Offset) {
+		float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(),
+				color.getBlue(), null);
 
-		hsb[0] = adjustHSBOverflow(hsb[0] - defaultHsbOffset[0] + (hue2555Offset / 255f));
+		hsb[0] = adjustHSBOverflow(hsb[0] - defaultHsbOffset[0]
+				+ (hue2555Offset / 255f));
 		hsb[1] = adjustHSBOverflow(hsb[1] - defaultHsbOffset[1]
 				+ (saturation2555Offset / 255f));
 		hsb[2] = adjustHSBOverflow(hsb[2] - defaultHsbOffset[2]
@@ -64,8 +66,8 @@ public class EqualizedTheme extends DefaultMetalTheme {
 		if (value < 0.0) {
 			return adjustHSBOverflow(-value);
 		}
-		if(value > 1.0){
-			return adjustHSBOverflow((float)Math.ceil(value) - value);
+		if (value > 1.0) {
+			return adjustHSBOverflow((float) Math.ceil(value) - value);
 		}
 		value = Math.round(value * 100f) / 100f;
 		return value;
@@ -253,9 +255,62 @@ public class EqualizedTheme extends DefaultMetalTheme {
 		return Math.round(defaultHsbOffset[2] * 255);
 	}
 
-	public void apply() throws Exception {
-		MetalLookAndFeel.setCurrentTheme(this);
-		UIManager.setLookAndFeel(MetalLookAndFeel.class.getName());
+	public void activate(){
+		if (isAlreadyActive()) {
+			return;
+		}
+		try {
+			MetalLookAndFeel.setCurrentTheme(this);
+			UIManager.setLookAndFeel(MetalLookAndFeel.class.getName());			
+		} catch (Exception e) {
+			throw new AssertionError(e);
+		}
+		for (Window window : Window.getWindows()) {
+			SwingUtilities.updateComponentTreeUI(window);
+		}		
+	}
+	
+
+
+	public boolean isAlreadyActive() {
+		LookAndFeel currentLAF = UIManager.getLookAndFeel();
+		if (!(currentLAF instanceof MetalLookAndFeel)) {
+			return false;
+		}
+		if (!(this.equals(MetalLookAndFeel.getCurrentTheme()))) {
+			return false;
+		}
+		return true;
+	}
+
+
+	@Override
+	public int hashCode() {
+		return brightnessOffset + hueOffset + saturationOffset;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof EqualizedTheme)) {
+			return false;
+		}
+		EqualizedTheme other = (EqualizedTheme) obj;
+		if (other.brightnessOffset != brightnessOffset) {
+			return false;
+		}
+		if (other.hueOffset != hueOffset) {
+			return false;
+		}
+		if (other.saturationOffset != saturationOffset) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getName() + "(" + hueOffset + "," + saturationOffset
+				+ "," + brightnessOffset + ")";
 	}
 
 }
