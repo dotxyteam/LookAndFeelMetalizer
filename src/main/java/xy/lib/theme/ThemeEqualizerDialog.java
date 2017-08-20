@@ -60,63 +60,7 @@ public class ThemeEqualizerDialog extends JDialog {
 	protected JButton okButton;
 	protected JButton cancelButton;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) throws Exception {
-		tryToLaunchTheMainApplication(args);
-		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(null, null);
-		dialog.setModal(false);
-		dialog.setAlwaysOnTop(true);
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-		dialog.setVisible(true);
-	}
-
-	private static void tryToLaunchTheMainApplication(final String[] args) {
-		new Thread() {
-			@Override
-			public void run() {
-				try {
-					String mainClassName = System.getProperty(TEST_MAIN_CLASS_PROPERTY_KEY);
-					ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-					if (mainClassName == null) {
-						classLoader = URLClassLoader.newInstance(
-								new URL[] { new URL(System.getProperty(DEFAULT_TEST_APPLICATION_URL_PROPERTY_KEY,
-										"https://raw.githubusercontent.com/dotxyteam/LookAndFeelMetalizer/master/tools/SwingSet2.jar")) },
-								getClass().getClassLoader());
-						mainClassName = System.getProperty(DEFAULT_TEST_APPLICATION_MAIN_CLASS_PROPERTY_KEY,
-								"SwingSet2");
-					}
-					Class<?> mainClass = Class.forName(mainClassName, true, classLoader);
-					Method mainMethod = mainClass.getMethod("main", String[].class);
-					mainMethod.invoke(null, new Object[] { args });
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-
-		}.start();
-	}
-
-	public static EqualizedTheme open(Window parent) {
-		return open(parent, new EqualizedTheme(EqualizedTheme.getDefaultHueOffset(),
-				EqualizedTheme.getDefaultSaturationOffset(), EqualizedTheme.getDefaultBrightnessOffset()));
-	}
-
-	public static EqualizedTheme open(Window parent, EqualizedTheme initialTheme) {
-		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent, initialTheme);
-		dialog.setVisible(true);
-		if (dialog.isThemeAccepted()) {
-			return dialog.getSelectedTheme();
-		} else {
-			return null;
-		}
-	}
+	private Thread themeUpdater;
 
 	public ThemeEqualizerDialog(Window parent, EqualizedTheme initialValues) {
 		super(parent);
@@ -129,8 +73,35 @@ public class ThemeEqualizerDialog extends JDialog {
 				}
 			}
 		}
-		initializeControls(initialValues);
+		initializeControls();
+		initializeTheme(initialValues);
 		startThemeUpdater();
+	}
+
+	@Override
+	public void dispose() {
+		stopThemeUpdater();
+		if (!themeAccepted) {
+			restoreInitialLookAndFeel();
+		}
+		super.dispose();
+	}
+
+	protected void restoreInitialLookAndFeel() {
+		showBusy(this, true);
+		try {
+			MetalLookAndFeel.setCurrentTheme(initialTheme);
+			try {
+				UIManager.setLookAndFeel(initialLookAndFeel);
+			} catch (UnsupportedLookAndFeelException e) {
+				throw new AssertionError(e);
+			}
+			for (Window window : Window.getWindows()) {
+				SwingUtilities.updateComponentTreeUI(window);
+			}
+		} finally {
+			showBusy(this, false);
+		}
 	}
 
 	public long getPreviewDelayMilliseconds() {
@@ -142,11 +113,14 @@ public class ThemeEqualizerDialog extends JDialog {
 	}
 
 	protected void startThemeUpdater() {
-		Thread thread = new Thread(ThemeEqualizerDialog.class.getName() + " - ThemeUpdater") {
+		themeUpdater = new Thread(ThemeEqualizerDialog.class.getName() + " - ThemeUpdater") {
 			@Override
 			public void run() {
 				while (true) {
 					try {
+						if (isInterrupted()) {
+							break;
+						}
 						if (themeUpdateRequested) {
 							showBusy(ThemeEqualizerDialog.this, true);
 							try {
@@ -164,18 +138,29 @@ public class ThemeEqualizerDialog extends JDialog {
 						} else {
 							sleep(previewDelayMilliseconds);
 						}
+					} catch (InterruptedException e) {
+						interrupt();
 					} catch (Throwable t) {
 						t.printStackTrace();
 					}
 				}
 			}
 		};
-		thread.setDaemon(true);
-		thread.setPriority(Thread.MIN_PRIORITY);
-		thread.start();
+		themeUpdater.setDaemon(true);
+		themeUpdater.setPriority(Thread.MIN_PRIORITY);
+		themeUpdater.start();
 	}
 
-	protected void initializeControls(EqualizedTheme initialValues) {
+	protected void stopThemeUpdater() {
+		themeUpdater.interrupt();
+		try {
+			themeUpdater.join();
+		} catch (InterruptedException e) {
+			throw new AssertionError(e);
+		}
+	}
+
+	protected void initializeControls() {
 		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -257,7 +242,6 @@ public class ThemeEqualizerDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 
-			initValues(initialValues);
 		}
 
 	}
@@ -275,7 +259,7 @@ public class ThemeEqualizerDialog extends JDialog {
 				EqualizedTheme.getDefaultSaturationOffset(), EqualizedTheme.getDefaultBrightnessOffset()));
 	}
 
-	protected void initValues(EqualizedTheme initialValues) {
+	protected void initializeTheme(EqualizedTheme initialValues) {
 		initialLookAndFeel = UIManager.getLookAndFeel();
 		initialTheme = MetalLookAndFeel.getCurrentTheme();
 		if (initialValues != null) {
@@ -297,27 +281,6 @@ public class ThemeEqualizerDialog extends JDialog {
 	protected void okPressed() {
 		themeAccepted = true;
 		dispose();
-	}
-
-	@Override
-	public void dispose() {
-		if (!themeAccepted) {
-			showBusy(this, true);
-			try {
-				MetalLookAndFeel.setCurrentTheme(initialTheme);
-				try {
-					UIManager.setLookAndFeel(initialLookAndFeel);
-				} catch (UnsupportedLookAndFeelException e) {
-					throw new AssertionError(e);
-				}
-				for (Window window : Window.getWindows()) {
-					SwingUtilities.updateComponentTreeUI(window);
-				}
-			} finally {
-				showBusy(this, false);
-			}
-		}
-		super.dispose();
 	}
 
 	public boolean isThemeAccepted() {
@@ -360,5 +323,60 @@ public class ThemeEqualizerDialog extends JDialog {
 		hueSlider.setValue(theme.getHueOffset());
 		saturationSlider.setValue(theme.getSaturationOffset());
 		brightnessSlider.setValue(theme.getBrightnessOffset());
+	}
+
+	public static void main(String[] args) throws Exception {
+		tryToLaunchTheMainApplication(args);
+		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(null, null);
+		dialog.setModal(false);
+		dialog.setAlwaysOnTop(true);
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		dialog.setVisible(true);
+	}
+
+	public static EqualizedTheme open(Window parent) {
+		return open(parent, new EqualizedTheme(EqualizedTheme.getDefaultHueOffset(),
+				EqualizedTheme.getDefaultSaturationOffset(), EqualizedTheme.getDefaultBrightnessOffset()));
+	}
+
+	public static EqualizedTheme open(Window parent, EqualizedTheme initialTheme) {
+		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent, initialTheme);
+		dialog.setVisible(true);
+		if (dialog.isThemeAccepted()) {
+			return dialog.getSelectedTheme();
+		} else {
+			return null;
+		}
+	}
+
+	private static void tryToLaunchTheMainApplication(final String[] args) {
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					String mainClassName = System.getProperty(TEST_MAIN_CLASS_PROPERTY_KEY);
+					ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+					if (mainClassName == null) {
+						classLoader = URLClassLoader.newInstance(new URL[] { new URL(System.getProperty(
+								DEFAULT_TEST_APPLICATION_URL_PROPERTY_KEY,
+								"https://raw.githubusercontent.com/dotxyteam/LookAndFeelMetalizer/master/tools/SwingSet2.jar")) },
+								getClass().getClassLoader());
+						mainClassName = System.getProperty(DEFAULT_TEST_APPLICATION_MAIN_CLASS_PROPERTY_KEY,
+								"SwingSet2");
+					}
+					Class<?> mainClass = Class.forName(mainClassName, true, classLoader);
+					Method mainMethod = mainClass.getMethod("main", String[].class);
+					mainMethod.invoke(null, new Object[] { args });
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		}.start();
 	}
 }
