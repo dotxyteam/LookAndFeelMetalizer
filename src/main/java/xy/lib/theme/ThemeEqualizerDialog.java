@@ -46,8 +46,7 @@ public class ThemeEqualizerDialog extends JDialog {
 	protected JSlider hueSlider;
 	protected JSlider saturationSlider;
 	protected JSlider brightnessSlider;
-	protected Runnable willRunOnce;
-	protected Object willRunOnceMutex = new Object();
+	protected boolean themeUpdateRequested = false;
 
 	protected LookAndFeel initialLookAndFeel;
 	protected MetalTheme initialTheme;
@@ -83,27 +82,18 @@ public class ThemeEqualizerDialog extends JDialog {
 			@Override
 			public void run() {
 				try {
-					String mainClassName = System
-							.getProperty(TEST_MAIN_CLASS_PROPERTY_KEY);
-					ClassLoader classLoader = ClassLoader
-							.getSystemClassLoader();
+					String mainClassName = System.getProperty(TEST_MAIN_CLASS_PROPERTY_KEY);
+					ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 					if (mainClassName == null) {
-						classLoader = URLClassLoader
-								.newInstance(
-										new URL[] { new URL(
-												System.getProperty(
-														DEFAULT_TEST_APPLICATION_URL_PROPERTY_KEY,
-														"https://shards.googlecode.com/files/SwingSet2.jar")) },
-										getClass().getClassLoader());
-						mainClassName = System
-								.getProperty(
-										DEFAULT_TEST_APPLICATION_MAIN_CLASS_PROPERTY_KEY,
-										"SwingSet2");
+						classLoader = URLClassLoader.newInstance(
+								new URL[] { new URL(System.getProperty(DEFAULT_TEST_APPLICATION_URL_PROPERTY_KEY,
+										"https://raw.githubusercontent.com/dotxyteam/LookAndFeelMetalizer/master/tools/SwingSet3.jar")) },
+								getClass().getClassLoader());
+						mainClassName = System.getProperty(DEFAULT_TEST_APPLICATION_MAIN_CLASS_PROPERTY_KEY,
+								"SwingSet2");
 					}
-					Class<?> mainClass = Class.forName(mainClassName, true,
-							classLoader);
-					Method mainMethod = mainClass.getMethod("main",
-							String[].class);
+					Class<?> mainClass = Class.forName(mainClassName, true, classLoader);
+					Method mainMethod = mainClass.getMethod("main", String[].class);
 					mainMethod.invoke(null, new Object[] { args });
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -114,15 +104,12 @@ public class ThemeEqualizerDialog extends JDialog {
 	}
 
 	public static EqualizedTheme open(Window parent) {
-		return open(parent,
-				new EqualizedTheme(EqualizedTheme.getDefaultHueOffset(),
-						EqualizedTheme.getDefaultSaturationOffset(),
-						EqualizedTheme.getDefaultBrightnessOffset()));
+		return open(parent, new EqualizedTheme(EqualizedTheme.getDefaultHueOffset(),
+				EqualizedTheme.getDefaultSaturationOffset(), EqualizedTheme.getDefaultBrightnessOffset()));
 	}
 
 	public static EqualizedTheme open(Window parent, EqualizedTheme initialTheme) {
-		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent,
-				initialTheme);
+		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent, initialTheme);
 		dialog.setVisible(true);
 		if (dialog.isThemeAccepted()) {
 			return dialog.getSelectedTheme();
@@ -131,16 +118,10 @@ public class ThemeEqualizerDialog extends JDialog {
 		}
 	}
 
-	/**
-	 * Create the dialog.
-	 * 
-	 * @param initialTheme
-	 */
 	public ThemeEqualizerDialog(Window parent, EqualizedTheme initialValues) {
 		super(parent);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(
-				ThemeEqualizerDialog.class
-						.getResource("/xy/lib/theme/theme.gif")));
+		setIconImage(Toolkit.getDefaultToolkit()
+				.getImage(ThemeEqualizerDialog.class.getResource("/xy/lib/theme/theme.gif")));
 		if (parent != null) {
 			if (parent.getIconImages() != null) {
 				if (parent.getIconImages().size() > 0) {
@@ -148,6 +129,53 @@ public class ThemeEqualizerDialog extends JDialog {
 				}
 			}
 		}
+		initializeControls(initialValues);
+		startThemeUpdater();
+	}
+
+	public long getPreviewDelayMilliseconds() {
+		return previewDelayMilliseconds;
+	}
+
+	public void setPreviewDelayMilliseconds(long milliseconds) {
+		this.previewDelayMilliseconds = milliseconds;
+	}
+
+	protected void startThemeUpdater() {
+		Thread thread = new Thread(ThemeEqualizerDialog.class.getName() + " - ThemeUpdater") {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						if (themeUpdateRequested) {
+							showBusy(ThemeEqualizerDialog.this, true);
+							try {
+								sleep(previewDelayMilliseconds);
+								themeUpdateRequested = false;
+								SwingUtilities.invokeAndWait(new Runnable() {
+									@Override
+									public void run() {
+										updateTheme();
+									}
+								});
+							} finally {
+								showBusy(ThemeEqualizerDialog.this, false);
+							}
+						} else {
+							sleep(previewDelayMilliseconds);
+						}
+					} catch (Throwable t) {
+						t.printStackTrace();
+					}
+				}
+			}
+		};
+		thread.setDaemon(true);
+		thread.setPriority(Thread.MIN_PRIORITY);
+		thread.start();
+	}
+
+	protected void initializeControls(EqualizedTheme initialValues) {
 		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -167,10 +195,8 @@ public class ThemeEqualizerDialog extends JDialog {
 				messageLabel = new JLabel(getString("Change the Look") + ":");
 				changeFontSize(messageLabel, 24);
 				messageLabel.setOpaque(true);
-				messageLabel.setForeground(UIManager
-						.getColor("Label.background"));
-				messageLabel.setBackground(UIManager
-						.getColor("Label.foreground"));
+				messageLabel.setForeground(UIManager.getColor("Label.background"));
+				messageLabel.setBackground(UIManager.getColor("Label.foreground"));
 				messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 				contentPanel.add(messageLabel);
 			}
@@ -196,20 +222,19 @@ public class ThemeEqualizerDialog extends JDialog {
 		}
 		{
 			JPanel buttonPane = new JPanel();
-			buttonPane.setForeground(UIManager
-					.getColor("ComboBox.selectionForeground"));
+			buttonPane.setForeground(UIManager.getColor("ComboBox.selectionForeground"));
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				okButton = new JButton(getString("OK"));
 				okButton.addActionListener(new ActionListener() {
+
 					public void actionPerformed(ActionEvent e) {
 						okPressed();
 					}
 				});
 				{
-					defaultThemeButton = new JButton(
-							getString("Restore Defaults"));
+					defaultThemeButton = new JButton(getString("Restore Defaults"));
 					defaultThemeButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							defaultThemeRequested();
@@ -218,8 +243,10 @@ public class ThemeEqualizerDialog extends JDialog {
 					buttonPane.add(defaultThemeButton);
 				}
 				buttonPane.add(okButton);
+
 				getRootPane().setDefaultButton(okButton);
 			}
+
 			{
 				cancelButton = new JButton(getString("Cancel"));
 				cancelButton.addActionListener(new ActionListener() {
@@ -229,8 +256,10 @@ public class ThemeEqualizerDialog extends JDialog {
 				});
 				buttonPane.add(cancelButton);
 			}
+
 			initValues(initialValues);
 		}
+
 	}
 
 	protected String getString(String string) {
@@ -242,18 +271,8 @@ public class ThemeEqualizerDialog extends JDialog {
 	}
 
 	protected void defaultThemeRequested() {
-		setSelectedTheme(new EqualizedTheme(
-				EqualizedTheme.getDefaultHueOffset(),
-				EqualizedTheme.getDefaultSaturationOffset(),
-				EqualizedTheme.getDefaultBrightnessOffset()));
-	}
-
-	public long getPreviewDelayMilliseconds() {
-		return previewDelayMilliseconds;
-	}
-
-	public void setPreviewDelayMilliseconds(long milliseconds) {
-		this.previewDelayMilliseconds = milliseconds;
+		setSelectedTheme(new EqualizedTheme(EqualizedTheme.getDefaultHueOffset(),
+				EqualizedTheme.getDefaultSaturationOffset(), EqualizedTheme.getDefaultBrightnessOffset()));
 	}
 
 	protected void initValues(EqualizedTheme initialValues) {
@@ -265,10 +284,8 @@ public class ThemeEqualizerDialog extends JDialog {
 			brightnessSlider.setValue(initialValues.getBrightnessOffset());
 		} else {
 			hueSlider.setValue(EqualizedTheme.getDefaultHueOffset());
-			saturationSlider.setValue(EqualizedTheme
-					.getDefaultSaturationOffset());
-			brightnessSlider.setValue(EqualizedTheme
-					.getDefaultBrightnessOffset());
+			saturationSlider.setValue(EqualizedTheme.getDefaultSaturationOffset());
+			brightnessSlider.setValue(EqualizedTheme.getDefaultBrightnessOffset());
 		}
 	}
 
@@ -309,56 +326,15 @@ public class ThemeEqualizerDialog extends JDialog {
 
 	protected void colorValueChanged() {
 		updateLabels();
-		makeSureToRunOnce(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					SwingUtilities.invokeAndWait(new Runnable() {
-						@Override
-						public void run() {
-							showBusy(ThemeEqualizerDialog.this, true);
-							updateTheme();
-							showBusy(ThemeEqualizerDialog.this, false);
-						}
-					});
-				} catch (Exception e) {
-					throw new AssertionError(e);
-				}
-			}
-		}, previewDelayMilliseconds);
+		themeUpdateRequested = true;
 	}
 
 	protected void updateLabels() {
-		hueSlider.setBorder(BorderFactory.createTitledBorder(getString("Hue")
-				+ ": " + hueSlider.getValue()));
-		saturationSlider.setBorder(BorderFactory
-				.createTitledBorder(getString("Saturation") + ": "
-						+ saturationSlider.getValue()));
-		brightnessSlider.setBorder(BorderFactory
-				.createTitledBorder(getString("Brightness") + ": "
-						+ brightnessSlider.getValue()));
-	}
-
-	protected void makeSureToRunOnce(final Runnable runnable,
-			final long delayMilliseconds) {
-		if (willRunOnce != null) {
-			return;
-		}
-		willRunOnce = runnable;
-		new Thread() {
-			@Override
-			public void run() {
-				synchronized (willRunOnceMutex) {
-					try {
-						Thread.sleep(delayMilliseconds);
-					} catch (InterruptedException e) {
-						throw new AssertionError(e);
-					}
-					willRunOnce = null;
-					runnable.run();
-				}
-			}
-		}.start();
+		hueSlider.setBorder(BorderFactory.createTitledBorder(getString("Hue") + ": " + hueSlider.getValue()));
+		saturationSlider.setBorder(
+				BorderFactory.createTitledBorder(getString("Saturation") + ": " + saturationSlider.getValue()));
+		brightnessSlider.setBorder(
+				BorderFactory.createTitledBorder(getString("Brightness") + ": " + brightnessSlider.getValue()));
 	}
 
 	protected void updateTheme() {
@@ -377,8 +353,7 @@ public class ThemeEqualizerDialog extends JDialog {
 	}
 
 	public EqualizedTheme getSelectedTheme() {
-		return new EqualizedTheme(hueSlider.getValue(),
-				saturationSlider.getValue(), brightnessSlider.getValue());
+		return new EqualizedTheme(hueSlider.getValue(), saturationSlider.getValue(), brightnessSlider.getValue());
 	}
 
 	public void setSelectedTheme(EqualizedTheme theme) {
