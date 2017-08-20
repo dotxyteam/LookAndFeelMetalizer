@@ -22,11 +22,11 @@ Download
 
 - Use Maven
 
-    <dependency>
-        <groupId>xy.lib.theme</groupId>
-        <artifactId>Metalizer</artifactId>
-        <version>1.0.2</version>
-    </dependency>
+    &lt;dependency&gt;
+        &lt;groupId&gt;xy.lib.theme&lt;/groupId&gt;
+        &lt;artifactId&gt;Metalizer&lt;/artifactId&gt;
+        &lt;version&gt;1.0.2&lt;/version&gt;
+    &lt;/dependency&gt;
     
 - Or Download The [JAR](https://github.com/dotxyteam/LookAndFeelMetalizer/releases)
 
