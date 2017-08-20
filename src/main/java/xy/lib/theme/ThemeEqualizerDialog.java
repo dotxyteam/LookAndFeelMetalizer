@@ -87,7 +87,7 @@ public class ThemeEqualizerDialog extends JDialog {
 					if (mainClassName == null) {
 						classLoader = URLClassLoader.newInstance(
 								new URL[] { new URL(System.getProperty(DEFAULT_TEST_APPLICATION_URL_PROPERTY_KEY,
-										"https://raw.githubusercontent.com/dotxyteam/LookAndFeelMetalizer/master/tools/SwingSet3.jar")) },
+										"https://raw.githubusercontent.com/dotxyteam/LookAndFeelMetalizer/master/tools/SwingSet2.jar")) },
 								getClass().getClassLoader());
 						mainClassName = System.getProperty(DEFAULT_TEST_APPLICATION_MAIN_CLASS_PROPERTY_KEY,
 								"SwingSet2");
