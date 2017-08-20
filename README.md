@@ -11,10 +11,24 @@ Features
 - consistent color schemes
 - theme selection dialog
 
+Requirements
+============
+
+Java >= 1.6
+
+
 Download
 ========
 
-Project: [master.zip](https://github.com/olitank/LookAndFeelMetalizer/archive/master.zip)
+- Use Maven
+
+	<dependency>
+    	<groupId>xy.lib.theme</groupId>
+		<artifactId>Metalizer</artifactId>
+		<version>1.0.2</version>
+	</dependency>
+    
+- Or Download The [JAR](https://github.com/dotxyteam/LookAndFeelMetalizer/releases)
 
 Usage
 =====
@@ -69,6 +83,6 @@ open the theme selection window:
 Feedback
 ========
 
-Feel free to [post any found bugs](https://github.com/olitank/LookAndFeelMetalizer/issues) or send me a message: dotxyteam@yahoo.fr
+Feel free to [post any found bugs](https://github.com/dotxyteam/LookAndFeelMetalizer/issues) or send me a message: dotxyteam@yahoo.fr
 
 Thanks!
