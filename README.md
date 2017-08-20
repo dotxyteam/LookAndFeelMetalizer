@@ -2,8 +2,7 @@ LookAndFeelMetalizer
 ====================
 
 LookAndFeelMetalizer allows to quickly modify the theme of the Metal look-and-feel
-
-![Screenshots](https://raw.github.com/olitank/LookAndFeelMetalizer/master/screenshots/all.png)
+![alt text](https://raw.githubusercontent.com/dotxyteam/LookAndFeelMetalizer/master/screenshots/all.png)
 
 Features
 ========
@@ -24,7 +23,7 @@ The jar file is runnable.
 
 To run:
 - either double-click on the jar file (OS-dependant)
-- or run this command: java -jar specifyTheDownloadedJarFile
+- or run this command: java -jar <pecifyTheDownloadedJarFile>
 
 By default it will:
 - open the theme selection dialog
@@ -47,7 +46,7 @@ include the following code in your application
 before creating any controls:
 
     try {
-        myTheme.apply();
+        myTheme.activate();
     } catch (Exception e1) {
         e1.printStackTrace();
     }
@@ -70,6 +69,6 @@ open the theme selection window:
 Feedback
 ========
 
-Feel free to [post any found bugs](https://github.com/olitank/LookAndFeelMetalizer/issues) or send me a message: olitank@yahoo.fr
+Feel free to [post any found bugs](https://github.com/olitank/LookAndFeelMetalizer/issues) or send me a message: dotxyteam@yahoo.fr
 
 Thanks!
