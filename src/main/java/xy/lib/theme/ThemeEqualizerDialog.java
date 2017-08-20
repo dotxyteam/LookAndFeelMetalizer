@@ -62,7 +62,7 @@ public class ThemeEqualizerDialog extends JDialog {
 
 	private Thread themeUpdater;
 
-	public ThemeEqualizerDialog(Window parent, EqualizedTheme initialValues) {
+	public ThemeEqualizerDialog(Window parent, EqualizedTheme initialTheme) {
 		super(parent);
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(ThemeEqualizerDialog.class.getResource("/xy/lib/theme/theme.gif")));
@@ -74,7 +74,7 @@ public class ThemeEqualizerDialog extends JDialog {
 			}
 		}
 		initializeControls();
-		initializeTheme(initialValues);
+		initializeControlValues(initialTheme);
 		startThemeUpdater();
 	}
 
@@ -231,7 +231,6 @@ public class ThemeEqualizerDialog extends JDialog {
 
 				getRootPane().setDefaultButton(okButton);
 			}
-
 			{
 				cancelButton = new JButton(getString("Cancel"));
 				cancelButton.addActionListener(new ActionListener() {
@@ -241,9 +240,7 @@ public class ThemeEqualizerDialog extends JDialog {
 				});
 				buttonPane.add(cancelButton);
 			}
-
 		}
-
 	}
 
 	protected String getString(String string) {
@@ -259,7 +256,7 @@ public class ThemeEqualizerDialog extends JDialog {
 				EqualizedTheme.getDefaultSaturationOffset(), EqualizedTheme.getDefaultBrightnessOffset()));
 	}
 
-	protected void initializeTheme(EqualizedTheme initialValues) {
+	protected void initializeControlValues(EqualizedTheme initialValues) {
 		initialLookAndFeel = UIManager.getLookAndFeel();
 		initialTheme = MetalLookAndFeel.getCurrentTheme();
 		if (initialValues != null) {
