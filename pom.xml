@@ -5,9 +5,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<groupId>xy.lib.theme</groupId>
+	<groupId>com.github.dotxyteam</groupId>
 	<artifactId>Metalizer</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<packaging>jar</packaging>
 	<name>Metalizer</name>
 	<description>Java library generating a great number of color combinations for theming Swing applications</description>

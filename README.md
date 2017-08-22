@@ -23,7 +23,7 @@ Download
 - Use Maven
 
     <pre><code>&lt;dependency&gt;
-        &lt;groupId&gt;xy.lib.theme&lt;/groupId&gt;
+        &lt;groupId&gt;com.github.dotxyteam&lt;/groupId&gt;
         &lt;artifactId&gt;Metalizer&lt;/artifactId&gt;
         &lt;version&gt;1.0.2&lt;/version&gt;
     &lt;/dependency&gt;</code></pre>
@@ -35,7 +35,7 @@ Usage
 
 The jar file is runnable.
 
-To run:
+To test:
 - either double-click on the jar file (OS-dependant)
 - or run this command: java -jar <pecifyTheDownloadedJarFile>
 
