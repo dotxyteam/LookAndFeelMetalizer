@@ -62,7 +62,7 @@ public class ThemeEqualizerDialog extends JDialog {
 
 	private Thread themeUpdater;
 
-	public ThemeEqualizerDialog(Window parent, EqualizedTheme initialTheme) {
+	public ThemeEqualizerDialog(Window parent, EqualizedMetalTheme initialTheme) {
 		super(parent);
 		setIconImage(Toolkit.getDefaultToolkit()
 				.getImage(ThemeEqualizerDialog.class.getResource("/xy/lib/theme/theme.gif")));
@@ -252,22 +252,16 @@ public class ThemeEqualizerDialog extends JDialog {
 	}
 
 	protected void defaultThemeRequested() {
-		setSelectedTheme(new EqualizedTheme(EqualizedTheme.getDefaultHueOffset(),
-				EqualizedTheme.getDefaultSaturationOffset(), EqualizedTheme.getDefaultBrightnessOffset()));
+		setSelectedTheme(new EqualizedMetalTheme());
 	}
 
-	protected void initializeControlValues(EqualizedTheme initialValues) {
+	protected void initializeControlValues(EqualizedMetalTheme initialEqualizedTheme) {
 		initialLookAndFeel = UIManager.getLookAndFeel();
 		initialTheme = MetalLookAndFeel.getCurrentTheme();
-		if (initialValues != null) {
-			hueSlider.setValue(initialValues.getHueOffset());
-			saturationSlider.setValue(initialValues.getSaturationOffset());
-			brightnessSlider.setValue(initialValues.getBrightnessOffset());
-		} else {
-			hueSlider.setValue(EqualizedTheme.getDefaultHueOffset());
-			saturationSlider.setValue(EqualizedTheme.getDefaultSaturationOffset());
-			brightnessSlider.setValue(EqualizedTheme.getDefaultBrightnessOffset());
+		if (initialEqualizedTheme == null) {
+			initialEqualizedTheme = new EqualizedMetalTheme();
 		}
+		setSelectedTheme(initialEqualizedTheme);
 	}
 
 	protected void cancelPressed() {
@@ -298,7 +292,7 @@ public class ThemeEqualizerDialog extends JDialog {
 	}
 
 	protected void updateTheme() {
-		EqualizedTheme selectedTheme = getSelectedTheme();
+		EqualizedMetalTheme selectedTheme = getSelectedTheme();
 		selectedTheme.activate();
 		messageLabel.setForeground(UIManager.getColor("Label.background"));
 		messageLabel.setBackground(UIManager.getColor("Label.foreground"));
@@ -312,14 +306,18 @@ public class ThemeEqualizerDialog extends JDialog {
 		}
 	}
 
-	public EqualizedTheme getSelectedTheme() {
-		return new EqualizedTheme(hueSlider.getValue(), saturationSlider.getValue(), brightnessSlider.getValue());
+	public EqualizedMetalTheme getSelectedTheme() {
+		EqualizedMetalTheme result = new EqualizedMetalTheme();
+		result.getEqualization().setHue(hueSlider.getValue()/255f);
+		result.getEqualization().setSaturation(saturationSlider.getValue()/255f);
+		result.getEqualization().setBrightness(brightnessSlider.getValue()/255f);
+		return result;
 	}
 
-	public void setSelectedTheme(EqualizedTheme theme) {
-		hueSlider.setValue(theme.getHueOffset());
-		saturationSlider.setValue(theme.getSaturationOffset());
-		brightnessSlider.setValue(theme.getBrightnessOffset());
+	public void setSelectedTheme(EqualizedMetalTheme theme) {
+		hueSlider.setValue(Math.round(theme.getEqualization().getHue() * 255));
+		saturationSlider.setValue(Math.round(theme.getEqualization().getSaturation() * 255));
+		brightnessSlider.setValue(Math.round(theme.getEqualization().getBrightness() * 255));	
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -336,12 +334,11 @@ public class ThemeEqualizerDialog extends JDialog {
 		dialog.setVisible(true);
 	}
 
-	public static EqualizedTheme open(Window parent) {
-		return open(parent, new EqualizedTheme(EqualizedTheme.getDefaultHueOffset(),
-				EqualizedTheme.getDefaultSaturationOffset(), EqualizedTheme.getDefaultBrightnessOffset()));
+	public static EqualizedMetalTheme open(Window parent) {
+		return open(parent, new EqualizedMetalTheme());
 	}
 
-	public static EqualizedTheme open(Window parent, EqualizedTheme initialTheme) {
+	public static EqualizedMetalTheme open(Window parent, EqualizedMetalTheme initialTheme) {
 		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent, initialTheme);
 		dialog.setVisible(true);
 		if (dialog.isThemeAccepted()) {

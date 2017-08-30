@@ -1,4 +1,4 @@
-import xy.lib.theme.EqualizedTheme;
+import xy.lib.theme.EqualizedMetalTheme;
 import xy.lib.theme.ThemeEqualizerDialog;
 
 public class Example {
@@ -17,13 +17,14 @@ public class Example {
 		 * open the theme selection dialog try to download and open a test application
 		 * 
 		 * A Metalizer theme is an 'EqualizedTheme' object. It is defined by 3 values:
-		 * hue, saturation and brightness. Each value is an integer between 0 and 255.
-		 * Open the theme selection dialog to find out your preferred values. Example:
+		 * hue, saturation and brightness. Each value is an float between 0 and 1. Open
+		 * the theme selection dialog to find out your preferred values. Note that the
+		 * theme equalization dialog maps the values from 0f-1f to 0-255. Example:
 		 */
-		int hue = 0;
-		int saturation = 0;
-		int brightness = 0;
-		EqualizedTheme myTheme = new EqualizedTheme(hue, saturation, brightness);
+		EqualizedMetalTheme myTheme = new EqualizedMetalTheme();
+		myTheme.getEqualization().setHue(0);
+		myTheme.getEqualization().setSaturation(0);
+		myTheme.getEqualization().setBrightness(0);
 		/*
 		 * To enable the theme, include the following code in your application before
 		 * creating any controls:
@@ -40,12 +41,13 @@ public class Example {
 		 * 
 		 * Use the following code to open the theme selection window:
 		 */
-		EqualizedTheme selectedTheme = ThemeEqualizerDialog.open(null, myTheme);
+		EqualizedMetalTheme selectedTheme = ThemeEqualizerDialog.open(null, myTheme);
 		if (selectedTheme == null) {
 			System.out.println("Theme selection cancelled");
 		} else {
-			System.out.println("Selected theme values: hue=" + selectedTheme.getHueOffset() + ", saturation="
-					+ selectedTheme.getSaturationOffset() + ", brightness=" + selectedTheme.getBrightnessOffset());
+			System.out.println("Selected theme : hue=" + selectedTheme.getEqualization().getHue() + ", saturation="
+					+ selectedTheme.getEqualization().getSaturation() + ", brightness="
+					+ selectedTheme.getEqualization().getBrightness());
 		}
 
 	}

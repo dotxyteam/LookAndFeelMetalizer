@@ -9,7 +9,7 @@
 		<dependency>
 			<groupId>com.github.dotxyteam</groupId>
 			<artifactId>metalizer</artifactId>
-			<version>RELEASE</version>
+			<version>1.0.3</version>
 		</dependency>
-	</dependencies>	
+	</dependencies>
 </project>
