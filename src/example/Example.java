@@ -1,4 +1,5 @@
 import xy.lib.theme.EqualizedMetalTheme;
+import xy.lib.theme.IEqualizedTheme;
 import xy.lib.theme.ThemeEqualizerDialog;
 
 public class Example {
@@ -41,7 +42,7 @@ public class Example {
 		 * 
 		 * Use the following code to open the theme selection window:
 		 */
-		EqualizedMetalTheme selectedTheme = ThemeEqualizerDialog.open(null, myTheme);
+		IEqualizedTheme selectedTheme = ThemeEqualizerDialog.open(null, myTheme);
 		if (selectedTheme == null) {
 			System.out.println("Theme selection cancelled");
 		} else {

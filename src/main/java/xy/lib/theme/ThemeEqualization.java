@@ -4,41 +4,68 @@ import java.awt.Color;
 
 import javax.swing.plaf.ColorUIResource;
 
-public class ThemeEqualization {
+public class ThemeEqualization implements Cloneable {
 
-	private float defaultHue;
-	private float defaultSaturation;
-	private float defaultBrightness;
+	private float pivotHue;
+	private float pivotSaturation;
+	private float pivotBrightness;
 
 	private float hue;
 	private float saturation;
 	private float brightness;
 
-	public ThemeEqualization(float defaultHue, float defaultSaturation, float defaultBrightness) {
+	private boolean colorsInverted = false;
+
+	public ThemeEqualization(float pivotHue, float pivotSaturation, float pivotBrightness, float hue, float saturation,
+			float brightness) {
 		super();
-		this.hue = this.defaultHue = defaultHue;
-		this.saturation = this.defaultSaturation = defaultSaturation;
-		this.brightness = this.defaultBrightness = defaultBrightness;
+		this.pivotHue = pivotHue;
+		this.pivotSaturation = pivotSaturation;
+		this.pivotBrightness = pivotBrightness;
+		this.hue = hue;
+		this.saturation = saturation;
+		this.brightness = brightness;
 	}
 
-	public ThemeEqualization(float[] defaultHsb) {
-		this(defaultHsb[0], defaultHsb[1], defaultHsb[2]);
+	public ThemeEqualization(float[] pivotHsb, float[] hsb) {
+		this(pivotHsb[0], pivotHsb[1], pivotHsb[2], hsb[0], hsb[1], hsb[2]);
 	}
 
-	public ThemeEqualization(Color mainColor) {
-		this(Color.RGBtoHSB(mainColor.getRed(), mainColor.getGreen(), mainColor.getBlue(), null));
+	public ThemeEqualization(float pivotHue, float pivotSaturation, float pivotBrightness) {
+		this(pivotHue, pivotSaturation, pivotBrightness, pivotHue, pivotSaturation, pivotBrightness);
 	}
 
-	public float getDefaultHue() {
-		return defaultHue;
+	public ThemeEqualization(Color pivotColor, Color color) {
+		this(Color.RGBtoHSB(pivotColor.getRed(), pivotColor.getGreen(), pivotColor.getBlue(), null),
+				Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null));
 	}
 
-	public float getDefaultSaturation() {
-		return defaultSaturation;
+	public ThemeEqualization(float[] pivotHsb) {
+		this(pivotHsb[0], pivotHsb[1], pivotHsb[2]);
 	}
 
-	public float getDefaultBrightness() {
-		return defaultBrightness;
+	public ThemeEqualization(Color pivotColor) {
+		this(pivotColor, pivotColor);
+	}
+
+	public Color getPivotColor() {
+		return new Color(Color.HSBtoRGB(pivotHue, pivotSaturation, pivotBrightness));
+	}
+
+	public Color getColor() {
+		return new Color(Color.HSBtoRGB(hue, saturation, brightness));
+	}
+
+	public float getPivotHue() {
+		return pivotHue;
+	}
+
+	public float getPivotSaturation() {
+		return pivotSaturation;
+	}
+
+	public float getPivotBrightness() {
+		return pivotBrightness;
 	}
 
 	public float getHue() {
@@ -65,14 +92,44 @@ public class ThemeEqualization {
 		this.brightness = brightness;
 	}
 
+	public boolean areColorsInverted() {
+		return colorsInverted;
+	}
+
+	public void setColorsInverted(boolean colorsInverted) {
+		this.colorsInverted = colorsInverted;
+	}
+
+	public void setHSB(float hue, float saturation, float brightness) {
+		this.hue = hue;
+		this.saturation = saturation;
+		this.brightness = brightness;
+	}
+
+	public void setColor(Color color) {
+		float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+		setHSB(hsb[0], hsb[1], hsb[2]);
+	}
+
 	public ColorUIResource apply(Color color) {
 		float[] hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
 
-		hsb[0] = adjustHSBOverflow(hsb[0] - defaultHue + hue);
-		hsb[1] = adjustHSBOverflow(hsb[1] - defaultSaturation + saturation);
-		hsb[2] = adjustHSBOverflow(hsb[2] - defaultBrightness + brightness);
+		float hueOffset = -pivotHue + hue;
+		float saturationOffset = -pivotSaturation + saturation;
+		float brightnessOffset = -pivotBrightness + brightness;
+
+		hsb[0] = adjustHSBOverflow(hsb[0] + hueOffset);
+		hsb[1] = adjustHSBOverflow(hsb[1] + saturationOffset);
+		hsb[2] = adjustHSBOverflow(hsb[2] + brightnessOffset);
 
 		int rgb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+
+		if (colorsInverted) {
+			Color newColor = new Color(rgb);
+			newColor = new Color(255 - newColor.getRed(), 255 - newColor.getGreen(), 255 - newColor.getBlue());
+			rgb = newColor.getRGB();
+		}
+
 		return new ColorUIResource(rgb);
 	}
 
@@ -88,13 +145,22 @@ public class ThemeEqualization {
 	}
 
 	@Override
+	public ThemeEqualization clone() {
+		try {
+			return (ThemeEqualization) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Float.floatToIntBits(brightness);
-		result = prime * result + Float.floatToIntBits(defaultBrightness);
-		result = prime * result + Float.floatToIntBits(defaultHue);
-		result = prime * result + Float.floatToIntBits(defaultSaturation);
+		result = prime * result + Float.floatToIntBits(pivotBrightness);
+		result = prime * result + Float.floatToIntBits(pivotHue);
+		result = prime * result + Float.floatToIntBits(pivotSaturation);
 		result = prime * result + Float.floatToIntBits(hue);
 		result = prime * result + Float.floatToIntBits(saturation);
 		return result;
@@ -111,11 +177,11 @@ public class ThemeEqualization {
 		ThemeEqualization other = (ThemeEqualization) obj;
 		if (Float.floatToIntBits(brightness) != Float.floatToIntBits(other.brightness))
 			return false;
-		if (Float.floatToIntBits(defaultBrightness) != Float.floatToIntBits(other.defaultBrightness))
+		if (Float.floatToIntBits(pivotBrightness) != Float.floatToIntBits(other.pivotBrightness))
 			return false;
-		if (Float.floatToIntBits(defaultHue) != Float.floatToIntBits(other.defaultHue))
+		if (Float.floatToIntBits(pivotHue) != Float.floatToIntBits(other.pivotHue))
 			return false;
-		if (Float.floatToIntBits(defaultSaturation) != Float.floatToIntBits(other.defaultSaturation))
+		if (Float.floatToIntBits(pivotSaturation) != Float.floatToIntBits(other.pivotSaturation))
 			return false;
 		if (Float.floatToIntBits(hue) != Float.floatToIntBits(other.hue))
 			return false;
@@ -126,9 +192,8 @@ public class ThemeEqualization {
 
 	@Override
 	public String toString() {
-		return "ThemeEqualization [defaultHue=" + defaultHue + ", defaultSaturation=" + defaultSaturation
-				+ ", defaultBrightness=" + defaultBrightness + ", hue=" + hue + ", saturation=" + saturation
-				+ ", brightness=" + brightness + "]";
+		return "ThemeEqualization [pivotHue=" + pivotHue + ", pivotSaturation=" + pivotSaturation + ", pivotBrightness="
+				+ pivotBrightness + ", hue=" + hue + ", saturation=" + saturation + ", brightness=" + brightness + "]";
 	}
 
 }

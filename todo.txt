@@ -1,2 +1,1 @@
-- add multiple adjustHSBOverflow methods
-- add other look-and-feels (Windows, Nimbus, ...)
+- swing: title border foreground not changing at least when colors inverted
