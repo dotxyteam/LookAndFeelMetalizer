@@ -80,6 +80,11 @@ open the theme selection window:
         + selectedTheme.getBrightnessOffset());
 
 
+Used by
+=======
+
+- [Phoyo photo booth software](http://www.phoyosystem.com/) 
+
 Feedback
 ========
 
