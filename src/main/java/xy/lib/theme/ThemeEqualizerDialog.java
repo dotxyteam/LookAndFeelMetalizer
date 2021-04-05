@@ -425,21 +425,21 @@ public class ThemeEqualizerDialog extends JDialog {
 		return options.get(selectionIndex);
 	}
 
-	public static IEqualizedTheme open(Window parent) {
+	public static boolean open(Window parent) {
 		IEqualizedTheme selectedTheme = askEqualizedThemeBase();
 		if (selectedTheme == null) {
-			return null;
+			return false;
 		}
 		return open(parent, selectedTheme);
 	}
 
-	public static IEqualizedTheme open(Window parent, IEqualizedTheme initialTheme) {
-		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent, initialTheme);
+	public static boolean open(Window parent, IEqualizedTheme theme) {
+		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent, theme);
 		dialog.setVisible(true);
 		if (dialog.isThemeAccepted()) {
-			return dialog.getEqualizedTheme();
+			return true;
 		} else {
-			return null;
+			return false;
 		}
 	}
 
