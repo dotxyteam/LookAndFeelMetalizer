@@ -47,7 +47,7 @@ A Metalizer theme is an an instance of the 'IEqualizedTheme' interface.
 It has the following implementations:
 
 		IEqualizedTheme myTheme = new EqualizedMetalTheme();
-        IEqualizedTheme myTheme = new EqualizedNimbusTheme();
+		IEqualizedTheme myTheme = new EqualizedNimbusTheme();
 		IEqualizedTheme myTheme = new EqualizedGlassTheme();
 
 It has 4 values that can be changed: hue, saturation, brightness and color inversion.
