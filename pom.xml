@@ -8,7 +8,7 @@
 
 	<groupId>com.github.dotxyteam</groupId>
 	<artifactId>metalizer</artifactId>
-	<version>3.0.1</version>
+	<version>3.2.0</version>
 	<packaging>jar</packaging>
 	<name>metalizer</name>
 	<description>Java library generating a great number of color combinations for theming Swing applications</description>
