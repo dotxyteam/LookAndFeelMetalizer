@@ -25,7 +25,7 @@ Download
     <pre><code>&lt;dependency&gt;
         &lt;groupId&gt;com.github.dotxyteam&lt;/groupId&gt;
         &lt;artifactId&gt;metalizer&lt;/artifactId&gt;
-        &lt;version&gt;1.0.3&lt;/version&gt;
+        &lt;version&gt;3.0.1&lt;/version&gt;
     &lt;/dependency&gt;</code></pre>
     
 - Or Download The [JAR](https://github.com/dotxyteam/LookAndFeelMetalizer/releases)
@@ -43,41 +43,42 @@ By default it will:
 - open the theme selection dialog
 - try to download and open a test application
 
-A Metalizer theme is an 'EqualizedTheme' object.
-It is defined by 3 values: hue, saturation and brightness.
-Each value is an integer between 0 and 255.
+A Metalizer theme is an an instance of the 'IEqualizedTheme' interface.
+It has the following implementations:
+
+		IEqualizedTheme myTheme = new EqualizedMetalTheme();
+		IEqualizedTheme myTheme = new EqualizedNimbusTheme();
+		IEqualizedTheme myTheme = new EqualizedGlassTheme();
+
+It has 4 values that can be changed: hue, saturation, brightness and color inversion.
+The first 3 values are floats between 0f and 255f.
+The last value is a boolean.
 Open the theme selection dialog to find out your preferred values.
 Example:
 
-    int hue = 0;
-    int saturation = 0;
-    int brightness = 0;
-    EqualizedTheme myTheme = new EqualizedTheme(hue, saturation,
-            brightness);
+		float hue = 0f;
+		float saturation = 0f;
+		float brightness = 0f;
+		boolean invertColors = false;
+		
+		myTheme.getEqualization().setHue(hue);
+		myTheme.getEqualization().setSaturation(saturation);
+		myTheme.getEqualization().setBrightness(brightness);
+		myTheme.getEqualization().setColorsInverted(invertColors);
 
 To enable the theme, 
-include the following code in your application
-before creating any controls:
+include the following code in your application before creating any controls:
 
-    try {
-        myTheme.activate();
-    } catch (Exception e1) {
-        e1.printStackTrace();
-    }
+		myTheme.activate();
 
-If the controls are already created, then use:
+Use the following code to open the theme selection window:
 
-    SwingUtilities.updateComponentTreeUI(applicationWindow);
-    
-Use the following code to
-open the theme selection window:
-
-    EqualizedTheme selectedTheme = ThemeEqualizerDialog
-            .open(applicationWindow, myTheme);
-    System.out.println("Selected theme values: hue="
-            + selectedTheme.getHueOffset() + ", saturation="
-            + selectedTheme.getSaturationOffset() + ", brightness="
-        + selectedTheme.getBrightnessOffset());
+		boolean themeAccepted = ThemeEqualizerDialog.open(null, myTheme);
+		if (themeAccepted) {
+			System.out.println("Selected theme: " + myTheme);
+		} else {
+			System.out.println("Theme rejected. The initial look-and-feel should be restored");
+		}
 
 
 Used by
