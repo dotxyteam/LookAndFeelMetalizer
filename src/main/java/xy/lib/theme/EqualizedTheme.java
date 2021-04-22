@@ -10,7 +10,6 @@ import java.util.Arrays;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
-import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
@@ -23,26 +22,38 @@ import sun.swing.PrintColorUIResource;
 import sun.swing.SwingLazyValue;
 import sun.swing.SwingUtilities2;
 
-public class EqualizedMetalTheme extends OceanTheme implements IEqualizedTheme {
+/**
+ * This class allows to easily change the colors of the swing Metal
+ * look-and-feel ({@link MetalLookAndFeel}) while keeping them as consistent as
+ * possible. It is based on the {@link OceanTheme}.
+ * 
+ * @author olitank
+ *
+ */
+public class EqualizedTheme extends OceanTheme {
 
 	private ThemeEqualization equalization;
 
-	public EqualizedMetalTheme() {
+	/**
+	 * The default constructor. Builds a theme with default (unchanged) colors.
+	 */
+	public EqualizedTheme() {
 		super();
 		this.equalization = new ThemeEqualization(super.getSecondary3());
 	}
 
-	@Override
+	/**
+	 * @return The object allowing to vary this theme.
+	 */
 	public ThemeEqualization getEqualization() {
 		return equalization;
 	}
 
-	@Override
-	public Class<? extends LookAndFeel> getBaseLookAndFeelClass() {
-		return MetalLookAndFeel.class;
-	}
-
-	@Override
+	/**
+	 * Sets this theme as current. Note that the {@link MetalLookAndFeel} will be
+	 * set as the current look-and-feel and all open windows will be update after
+	 * the execution of this method.
+	 */
 	public void activate() {
 		try {
 			MetalLookAndFeel.setCurrentTheme(this);
@@ -115,10 +126,7 @@ public class EqualizedMetalTheme extends OceanTheme implements IEqualizedTheme {
 		return equalization.apply(super.getMenuDisabledForeground());
 	}
 
-	@Override /**
-				* 
-				*/
-
+	@Override
 	public ColorUIResource getDesktopColor() {
 		return equalization.apply(super.getDesktopColor());
 	}
@@ -299,7 +307,7 @@ public class EqualizedMetalTheme extends OceanTheme implements IEqualizedTheme {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EqualizedMetalTheme other = (EqualizedMetalTheme) obj;
+		EqualizedTheme other = (EqualizedTheme) obj;
 		if (equalization == null) {
 			if (other.equalization != null)
 				return false;
@@ -313,8 +321,6 @@ public class EqualizedMetalTheme extends OceanTheme implements IEqualizedTheme {
 		return "EqualizedMetalTheme [equalization=" + equalization + "]";
 	}
 
-	// InternalFrame Icon
-	// Delegates to different icons based on button state
 	private static class IFIcon extends IconUIResource {
 		private static final long serialVersionUID = 1L;
 		private Icon pressed;

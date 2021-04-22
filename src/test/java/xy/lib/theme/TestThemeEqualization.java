@@ -13,7 +13,7 @@ public class TestThemeEqualization {
 	@Test
 	public void test() {
 		final List<Throwable> errors = new ArrayList<Throwable>();
-		final ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(null, new EqualizedMetalTheme());
+		final ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(null, new EqualizedTheme());
 		try {
 			dialog.addWindowListener(new WindowAdapter() {
 				@Override
