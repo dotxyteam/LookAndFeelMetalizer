@@ -51,7 +51,7 @@ public class EqualizedTheme extends OceanTheme {
 
 	/**
 	 * Sets this theme as current. Note that the {@link MetalLookAndFeel} will be
-	 * set as the current look-and-feel and all open windows will be update after
+	 * set as the current look-and-feel and all open windows will be updated after
 	 * the execution of this method.
 	 */
 	public void activate() {

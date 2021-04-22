@@ -5,14 +5,21 @@ import java.awt.Color;
 import javax.swing.plaf.ColorUIResource;
 
 /**
- * This class holds the settings of an {@link EqualizedTheme} and is responsible
- * for the mapping of each color of the theme according to these settings. The
- * HSB (hue, saturation, brightness) settings held by this class are actually
- * variations of the hue, the saturation and the brightness of each color of the
+ * This class holds the settings of {@link EqualizedTheme} and is responsible
+ * for the mapping of each color of the theme according to these settings.
+ * 
+ * The colors of the theme are changed so that they remain consistent, which
+ * means that the contrasts between colors are maintained as much as possible.
+ * 
+ * Latitude and longitude correspond to rotations of colors in a space with 3
+ * dimensions that are the red, green and blue components of each color.
+ * 
+ * The HSB (hue, saturation, brightness) settings held by this class are indeed
+ * variations of the actual hue, saturation and brightness of each color of the
  * theme. Since the intent is to change multiple colors at the same time, this
  * class has pivot HSB values that allow to specify a main dominant color (it
- * will be dark when the brightness value is low, vivid when the saturation
- * value is high, etc) for convenience.
+ * will be dark when the brightness variation value is low, vivid when the
+ * saturation variation value is high, etc) for convenience.
  * 
  * @author olitank
  *
@@ -36,12 +43,10 @@ public class ThemeEqualization implements Cloneable {
 	 * Main constructor. Builds an instance with HSB values equal to pivot HSB
 	 * values.
 	 * 
-	 * @param latitude       A variation of colors that preserves as much as
-	 *                       possible the differences between each color. Must be
-	 *                       between 0 and 255.
-	 * @param longitude      Another variation of colors that preserves as much as.
-	 *                       possible the differences between each color. Must be
-	 *                       between 0 and 255.
+	 * @param latitude       A rotational variation of colors. Must be between 0 and
+	 *                       255.
+	 * @param longitude      Another rotational variation of colors. Must be between
+	 *                       0 and 255.
 	 * @param hue            The variation of the hue of each color. Must be between
 	 *                       0 and 255.
 	 * @param saturation     The variation of the saturation of each color. Must be
@@ -77,16 +82,16 @@ public class ThemeEqualization implements Cloneable {
 	}
 
 	/**
-	 * @return The value (between 0 and 255) of the first variation of colors that
-	 *         preserves as much as possible the differences between each color.
+	 * @return The value (between 0 and 255) of the first rotational variation of
+	 *         colors.
 	 */
 	public int getLatitude() {
 		return latitude;
 	}
 
 	/**
-	 * Updates the value (between 0 and 255) of the first variation of colors that
-	 * preserves as much as possible the differences between each color.
+	 * Updates the value (between 0 and 255) of the first rotational variation of
+	 * colors.
 	 * 
 	 * @param latitude The new color variation value (between 0 and 255).
 	 */
@@ -95,16 +100,16 @@ public class ThemeEqualization implements Cloneable {
 	}
 
 	/**
-	 * @return The value (between 0 and 255) of the second variation of colors that
-	 *         preserves as much as possible the differences between each color.
+	 * @return The value (between 0 and 255) of the second rotational variation of
+	 *         colors.
 	 */
 	public int getLongitude() {
 		return longitude;
 	}
 
 	/**
-	 * Updates the value (between 0 and 255) of the second variation of colors that
-	 * preserves as much as possible the differences between each color.
+	 * Updates the value (between 0 and 255) of the second rotational variation of
+	 * colors.
 	 * 
 	 * @param longitude The new color variation value (between 0 and 255).
 	 */

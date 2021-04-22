@@ -85,11 +85,11 @@ public class ThemeEqualizerDialog extends JDialog {
 	protected boolean eventsDisabled = false;
 
 	/**
-	 * The main constructor.
+	 * The main constructor. Builds an instance that will use the provided theme to
+	 * hold and preview the settings.
 	 * 
 	 * @param parent The parent window or null.
-	 * @param theme  The theme instance that will be used to hold and preview the
-	 *               settings.
+	 * @param theme  The theme instance that will be used.
 	 */
 	public ThemeEqualizerDialog(Window parent, EqualizedTheme theme) {
 		super(parent);
