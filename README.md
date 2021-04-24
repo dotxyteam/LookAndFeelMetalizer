@@ -14,7 +14,7 @@ Features
 Requirements
 ============
 
-Java >= 1.6
+Tested on Java 1.8
 
 
 Download
@@ -25,7 +25,7 @@ Download
     <pre><code>&lt;dependency&gt;
         &lt;groupId&gt;com.github.dotxyteam&lt;/groupId&gt;
         &lt;artifactId&gt;metalizer&lt;/artifactId&gt;
-        &lt;version&gt;3.0.1&lt;/version&gt;
+        &lt;version&gt;3.2.0&lt;/version&gt;
     &lt;/dependency&gt;</code></pre>
     
 - Or Download The [JAR](https://github.com/dotxyteam/LookAndFeelMetalizer/releases)
