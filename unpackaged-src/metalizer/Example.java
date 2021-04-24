@@ -1,13 +1,14 @@
 package metalizer;
 
-import xy.lib.theme.EqualizedTheme;
+import xy.lib.theme.EqualizedMetalTheme;
+import xy.lib.theme.IEqualizedTheme;
 import xy.lib.theme.ThemeEqualizerDialog;
 
 public class Example {
 
 	public static void main(String[] args) {
-		EqualizedTheme myTheme;
-		myTheme = new EqualizedTheme();
+		IEqualizedTheme myTheme;
+		myTheme = new EqualizedMetalTheme();
 
 		myTheme.getEqualization().setLatitude(37);
 		myTheme.getEqualization().setLongitude(42);

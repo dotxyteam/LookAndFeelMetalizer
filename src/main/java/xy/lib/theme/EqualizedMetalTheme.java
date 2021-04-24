@@ -23,37 +23,41 @@ import sun.swing.SwingLazyValue;
 import sun.swing.SwingUtilities2;
 
 /**
- * This class allows to easily change the colors of the swing Metal
+ * This class allows to globally change all the colors of the swing Metal
  * look-and-feel ({@link MetalLookAndFeel}) while keeping them as consistent as
  * possible. It is based on the {@link OceanTheme}.
  * 
  * @author olitank
  *
  */
-public class EqualizedTheme extends OceanTheme {
+public class EqualizedMetalTheme extends OceanTheme implements IEqualizedTheme {
 
 	private ThemeEqualization equalization;
 
 	/**
 	 * The default constructor. Builds a theme with default (unchanged) colors.
 	 */
-	public EqualizedTheme() {
+	public EqualizedMetalTheme() {
 		super();
 		this.equalization = new ThemeEqualization(super.getSecondary3());
 	}
 
-	/**
-	 * @return The object allowing to vary this theme.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see xy.lib.theme.IEqualizedTheme#getEqualization()
 	 */
+	@Override
 	public ThemeEqualization getEqualization() {
 		return equalization;
 	}
 
-	/**
-	 * Sets this theme as current. Note that the {@link MetalLookAndFeel} will be
-	 * set as the current look-and-feel and all open windows will be updated after
-	 * the execution of this method.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see xy.lib.theme.IEqualizedTheme#activate()
 	 */
+	@Override
 	public void activate() {
 		try {
 			MetalLookAndFeel.setCurrentTheme(this);
@@ -307,7 +311,7 @@ public class EqualizedTheme extends OceanTheme {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EqualizedTheme other = (EqualizedTheme) obj;
+		EqualizedMetalTheme other = (EqualizedMetalTheme) obj;
 		if (equalization == null) {
 			if (other.equalization != null)
 				return false;

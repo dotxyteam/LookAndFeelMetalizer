@@ -38,7 +38,7 @@ import javax.swing.plaf.metal.MetalTheme;
 
 /**
  * This class allows to preview and choose a configuration that can be used with
- * an {@link EqualizedTheme} instance.
+ * an {@link EqualizedMetalTheme} instance.
  * 
  * @author olitank
  *
@@ -74,7 +74,7 @@ public class ThemeEqualizerDialog extends JDialog {
 	protected LookAndFeel initialLookAndFeel;
 	protected MetalTheme initialMetalTheme;
 	protected ThemeEqualization defaultEqualization;
-	protected EqualizedTheme equalizedTheme;
+	protected IEqualizedTheme equalizedTheme;
 
 	protected boolean themeAccepted = false;
 
@@ -91,7 +91,7 @@ public class ThemeEqualizerDialog extends JDialog {
 	 * @param parent The parent window or null.
 	 * @param theme  The theme instance that will be used.
 	 */
-	public ThemeEqualizerDialog(Window parent, EqualizedTheme theme) {
+	public ThemeEqualizerDialog(Window parent, IEqualizedTheme theme) {
 		super(parent);
 		setIconImage(getIcon());
 		if (parent != null) {
@@ -119,7 +119,7 @@ public class ThemeEqualizerDialog extends JDialog {
 	/**
 	 * @return The theme instance that is used to hold and preview the settings.
 	 */
-	public EqualizedTheme getEqualizedTheme() {
+	public IEqualizedTheme getEqualizedTheme() {
 		return equalizedTheme;
 	}
 
@@ -128,7 +128,7 @@ public class ThemeEqualizerDialog extends JDialog {
 	 * 
 	 * @param equalizedTheme The new theme instance.
 	 */
-	public void setEqualizedTheme(EqualizedTheme equalizedTheme) {
+	public void setEqualizedTheme(IEqualizedTheme equalizedTheme) {
 		this.equalizedTheme = equalizedTheme;
 		setDefaultEqualization(equalizedTheme.getEqualization().clone());
 		updateUserInterface();
@@ -413,7 +413,7 @@ public class ThemeEqualizerDialog extends JDialog {
 		c.setFont(c.getFont().deriveFont((float) newSize));
 	}
 
-	protected void initializeControlValues(EqualizedTheme equalizedTheme) {
+	protected void initializeControlValues(IEqualizedTheme equalizedTheme) {
 		initialLookAndFeel = UIManager.getLookAndFeel();
 		initialMetalTheme = MetalLookAndFeel.getCurrentTheme();
 		setEqualizedTheme(equalizedTheme);
@@ -523,21 +523,11 @@ public class ThemeEqualizerDialog extends JDialog {
 	 * Creates and opens an instance of this class.
 	 * 
 	 * @param parent The parent window.
-	 * @return Whether the theme configuration was accepted or not.
-	 */
-	public static boolean open(Window parent) {
-		return open(parent, new EqualizedTheme());
-	}
-
-	/**
-	 * Creates and opens an instance of this class.
-	 * 
-	 * @param parent The parent window.
 	 * @param theme  The theme instance that will be used to hold and preview the
 	 *               settings.
 	 * @return Whether the theme configuration was accepted or not.
 	 */
-	public static boolean open(Window parent, EqualizedTheme theme) {
+	public static boolean open(Window parent, IEqualizedTheme theme) {
 		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(parent, theme);
 		dialog.setVisible(true);
 		if (dialog.isThemeAccepted()) {
@@ -549,7 +539,7 @@ public class ThemeEqualizerDialog extends JDialog {
 
 	public static void main(String[] args) throws Exception {
 		tryToLaunchTheMainApplication(args);
-		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(null, new EqualizedTheme());
+		ThemeEqualizerDialog dialog = new ThemeEqualizerDialog(null, new EqualizedMetalTheme());
 		dialog.setModal(false);
 		dialog.setAlwaysOnTop(true);
 		dialog.addWindowListener(new WindowAdapter() {

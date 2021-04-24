@@ -5,14 +5,16 @@ import java.awt.Color;
 import javax.swing.plaf.ColorUIResource;
 
 /**
- * This class holds the settings of {@link EqualizedTheme} and is responsible
- * for the mapping of each color of the theme according to these settings.
+ * This class holds the settings of an {@link IEqualizedTheme} and is
+ * responsible for the mapping of each color of the theme according to these
+ * settings.
  * 
  * The colors of the theme are changed so that they remain consistent, which
  * means that the contrasts between colors are maintained as much as possible.
  * 
- * Latitude and longitude correspond to rotations of colors in a space with 3
- * dimensions that are the red, green and blue components of each color.
+ * Latitude and longitude correspond to rotations (around gray) of colors in a
+ * space with 3 dimensions that are the red, green and blue components of each
+ * color.
  * 
  * The HSB (hue, saturation, brightness) settings held by this class are indeed
  * variations of the actual hue, saturation and brightness of each color of the
