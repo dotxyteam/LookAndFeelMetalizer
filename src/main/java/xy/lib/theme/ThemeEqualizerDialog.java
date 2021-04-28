@@ -38,7 +38,7 @@ import javax.swing.plaf.metal.MetalTheme;
 
 /**
  * This class allows to preview and choose a configuration that can be used with
- * an {@link EqualizedMetalTheme} instance.
+ * an {@link IEqualizedTheme} instance.
  * 
  * @author olitank
  *
