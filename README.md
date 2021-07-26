@@ -25,7 +25,7 @@ Download
     <pre><code>&lt;dependency&gt;
         &lt;groupId&gt;com.github.dotxyteam&lt;/groupId&gt;
         &lt;artifactId&gt;metalizer&lt;/artifactId&gt;
-        &lt;version&gt;3.2.0&lt;/version&gt;
+        &lt;version&gt;3.4.0&lt;/version&gt;
     &lt;/dependency&gt;</code></pre>
     
 - Or Download The [JAR](https://github.com/dotxyteam/LookAndFeelMetalizer/releases)
@@ -44,27 +44,20 @@ By default it will:
 - try to download and open a test application
 
 A Metalizer theme is an an instance of the 'IEqualizedTheme' interface.
-It has the following implementations:
+It has the following implementation:
 
 		IEqualizedTheme myTheme = new EqualizedMetalTheme();
-		IEqualizedTheme myTheme = new EqualizedNimbusTheme();
-		IEqualizedTheme myTheme = new EqualizedGlassTheme();
 
-It has 4 values that can be changed: hue, saturation, brightness and color inversion.
-The first 3 values are floats between 0f and 255f.
-The last value is a boolean.
+It has 6 values that can be changed: latitude, longitude, hue, saturation, brightness and color inversion.
 Open the theme selection dialog to find out your preferred values.
 Example:
 
-		float hue = 0f;
-		float saturation = 0f;
-		float brightness = 0f;
-		boolean invertColors = false;
-		
-		myTheme.getEqualization().setHue(hue);
-		myTheme.getEqualization().setSaturation(saturation);
-		myTheme.getEqualization().setBrightness(brightness);
-		myTheme.getEqualization().setColorsInverted(invertColors);
+		myTheme.getEqualization().setLatitude(37);
+		myTheme.getEqualization().setLongitude(42);
+		myTheme.getEqualization().setHue(90);
+		myTheme.getEqualization().setSaturation(223);
+		myTheme.getEqualization().setBrightness(107);
+		myTheme.getEqualization().setColorsInverted(true);
 
 To enable the theme, 
 include the following code in your application before creating any controls:
